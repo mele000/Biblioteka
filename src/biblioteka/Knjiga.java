@@ -1,14 +1,12 @@
 package biblioteka;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Knjiga implements Serializable {
 
 	private String datum;
 	private boolean statusKnjige = true;
-	private boolean validacija;
-	public static ArrayList<Knjiga> pohranjeneKnjige = new ArrayList<>();
+	protected boolean validacija;
 	private int brojKnjige;
 	private String imeKnjige;
 
@@ -21,36 +19,11 @@ public class Knjiga implements Serializable {
 		this.statusKnjige = statusKnjige;
 		this.brojKnjige = brojKnjige;
 
-		if (brojKnjige >= 0) {
-			if (postojiLiIstaKnjiga(brojKnjige) == false) {
-				validacija = true;
-			} else if (postojiLiIstaKnjiga(brojKnjige) == true) {
-				validacija = false;
-				System.out.println(
-						imeKnjige + ", postoji vec jedna knjiga sa istim brojem,pokusajte napraviti neku drugu");
-
-			}
-		}
-
-		else if (brojKnjige < 0) {
-			validacija = false;
-			System.out.println(imeKnjige + " - broj knjige ne smije biti negativan");
-		}
-
-		if (validacija) {
-			System.out.println("Uspjesno ste kreirali odredjenu knjigu");
-		}
+		
 
 	}
 
-	public boolean postojiLiIstaKnjiga(int brojKnjige) {
-		for (int i = 0; i < pohranjeneKnjige.size(); i++) {
-			if (Knjiga.pohranjeneKnjige.get(i).getBrojKnjige() == brojKnjige) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	public int getBrojKnjige() {
 		return brojKnjige;

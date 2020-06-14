@@ -1,68 +1,27 @@
 package biblioteka;
 
 import java.io.EOFException;
-import java.io.FileInputStream;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main implements Serializable {
 
+	public static ArrayList<Racun> pohranjeniRacuni = new ArrayList<>();
+	public static ArrayList<Knjiga> pohranjeneKnjige = new ArrayList<>();
+	static Validacija val = new Validacija();
+
 	public static void main(String[] args)
 			throws EOFException, IOException, ClassNotFoundException, FileNotFoundException {
 
-		try {
-			FileInputStream fi = new FileInputStream("knjige.txt");
-			ObjectInputStream input = new ObjectInputStream(fi);
+		// CITANJE I ZAPISIVNAJE U ARR LIST
+		val.procitajSveIzBaze_Knjige();
+		val.procitajSveIzBaze_Racuni();
 
-			try {
-				while (true) {
-
-					Knjiga knjiga = (Knjiga) input.readObject();
-					Knjiga.pohranjeneKnjige.add(knjiga);
-					System.out.println(Knjiga.pohranjeneKnjige.toString());
-				}
-			} catch (EOFException e) {
-			}
-		} catch (EOFException e1) {
-
-		}
-
-		try {
-			FileInputStream fi = new FileInputStream("racuni.txt");
-			ObjectInputStream input = new ObjectInputStream(fi);
-
-			try {
-				while (true) {
-
-					Racun racun = (Racun) input.readObject();
-					Racun.pohranjeniRacuni.add(racun);
-					System.out.println(Racun.pohranjeniRacuni.toString());
-				}
-			} catch (EOFException e) {
-			}
-		} catch (EOFException e1) {
-
-		}
-		
-		
-		
-		
-		
-		
-		
-		
 		Scanner unos = new Scanner(System.in);
-
-		Racun racun = new Racun();
-		Knjiga knjiga = new Knjiga();
-		java.util.Date date = new java.util.Date();
 
 		System.out.println("Unesite" + "\n1 ako hocete kreirati racun," + "\n2 ako hocete kreirati knjigu"
 				+ "\n3 ako hocete podici knjigu" + "\n4 ako hocete vratiti knjigu"
@@ -80,9 +39,31 @@ public class Main implements Serializable {
 				unos.nextLine();
 				String imeMusterije = unos.nextLine();
 
-				racun = new Racun(brojRacuna, imeMusterije, 0);
+				Racun racun = new Racun(brojRacuna, imeMusterije);
+
+				if (brojRacuna >= 0) {
+					if (val.postojiLiIstiRacun(brojRacuna) == false) {
+						racun.validacija = true;
+					}
+
+					else if (val.postojiLiIstiRacun(brojRacuna) == true) {
+						racun.validacija = false;
+						System.out
+								.println(imeMusterije + ", postoji vec jedan racun sa tim brojem,pokusajte neki drugi");
+					}
+				}
+
+				else if (brojRacuna < 0) {
+					racun.validacija = false;
+					System.out.println(imeMusterije + ", broj racuna ne smije biti negativan");
+				}
+
+				if (racun.validacija) {
+					System.out.println("Izradili ste racun");
+				}
+
 				if (racun.getValidacija() == true) {
-					Racun.pohranjeniRacuni.add(racun);
+					pohranjeniRacuni.add(racun);
 				}
 			}
 
@@ -94,9 +75,30 @@ public class Main implements Serializable {
 				unos.nextLine();
 				String imeKnjige = unos.nextLine();
 
-				knjiga = new Knjiga(brojKnjige, imeKnjige, true);
+				Knjiga knjiga = new Knjiga(brojKnjige, imeKnjige, true);
+
+				if (brojKnjige >= 0) {
+					if (val.postojiLiIstaKnjiga(brojKnjige) == false) {
+						knjiga.validacija = true;
+					} else if (val.postojiLiIstaKnjiga(brojKnjige) == true) {
+						knjiga.validacija = false;
+						System.out.println(imeKnjige
+								+ ", postoji vec jedna knjiga sa istim brojem,pokusajte napraviti neku drugu");
+
+					}
+				}
+
+				else if (brojKnjige < 0) {
+					knjiga.validacija = false;
+					System.out.println(imeKnjige + " - broj knjige ne smije biti negativan");
+				}
+
+				if (knjiga.validacija) {
+					System.out.println("Uspjesno ste kreirali odredjenu knjigu");
+				}
+
 				if (knjiga.getValidacija() == true) {
-					knjiga.pohranjeneKnjige.add(knjiga);
+					Main.pohranjeneKnjige.add(knjiga);
 				}
 
 			} else if (broj == 3) {
@@ -106,7 +108,36 @@ public class Main implements Serializable {
 				System.out.println("\nUnesite broj knjige");
 				int brojKnjige = unos.nextInt();
 
-				PodizanjeKnjige podizanjeKnjige = new PodizanjeKnjige(brojRacuna, brojKnjige);
+				
+				java.util.Date date = new java.util.Date();
+				val.vratiRacun(brojRacuna).date2 = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
+				if (val.postojiLiIstiRacun(brojRacuna) == true) {
+
+					if (val.postojiLiIstaKnjiga(brojKnjige) == true && val.jeLiKnjigaDostupna(brojKnjige) == true) {
+
+						if (val.vratiRacun(brojRacuna).getBrojPosudjenihKnjiga() > 2) {
+							System.out.println("Vec imate 3 posudjene knjige");
+						}
+
+						else {
+							val.vratiKnjigu(brojKnjige).setStatusKnjige(false);
+							val.vratiRacun(brojRacuna).setBrojPosudjenihKnjigaPovecaj();
+							val.vratiRacun(brojRacuna).pohranjeniKnjigeNaRacunu.add(val.vratiKnjigu(brojKnjige));
+							val.vratiRacun(brojRacuna).pohranjeniKnjigeNaRacunu
+									.get(val.vratiRacun(brojRacuna).pohranjeniKnjigeNaRacunu.size() - 1)
+									.setDatum(val.vratiRacun(brojRacuna).date2);
+							System.out.println(val.vratiRacun(brojRacuna).getBrojPosudjenihKnjiga());
+							System.out.println(val.vratiKnjigu(brojKnjige).getStatusKnjige());
+						}
+					}
+
+					else
+						System.out.println("Knjiga ne postoji ili nije dostupna");
+				}
+
+				else
+					System.out.println("Vas racun nije pronaden");
 
 			}
 
@@ -117,7 +148,27 @@ public class Main implements Serializable {
 				System.out.println("\nUnesite broj knjige");
 				int brojKnjige = unos.nextInt();
 
-				VracanjeKnjige vracanjeKnjige = new VracanjeKnjige(brojRacuna, brojKnjige);
+
+				if (val.postojiLiIstiRacun(brojRacuna) == true) {
+
+					if (val.postojiLiIstaKnjiga(brojKnjige) == true && val.jeLiKnjigaDostupna(brojKnjige) == false) {
+
+						val.vratiKnjigu(brojKnjige).setStatusKnjige(true);
+						val.vratiRacun(brojRacuna).setBrojPosudjenihKnjigaSmanji();
+						System.out.println(val.vratiKnjigu(brojKnjige).getStatusKnjige());
+						System.out.println(val.vratiRacun(brojRacuna).getBrojPosudjenihKnjiga()); // dole provjerav
+																									// knjige koje su
+																									// pohranjene u
+																									// arrayu a mi
+																									// necemo to..
+					}
+
+					else
+						System.out.println("Knjiga ne postoji ili nije dostupna");
+				}
+
+				else
+					System.out.println("Vas racun nije pronaden");
 
 			}
 
@@ -126,8 +177,13 @@ public class Main implements Serializable {
 				System.out.println("Unesite broj racuna");
 				int brojRacuna = unos.nextInt();
 
-				Pregled pregled = new Pregled(brojRacuna);
 
+				if (val.imaLiKorisnikPodignutihKnjiga(brojRacuna) == true) {
+					System.out.println("Korisnik " + val.vratiRacun(brojRacuna).getImeMusterije()
+							+ " je podigao slijedece knjige : ");
+					val.ispisiKnjigePodignute(brojRacuna);
+				} else
+					System.out.println("Korisnik nema nijednu knjigu kod sebe");
 			}
 
 			else
@@ -142,39 +198,10 @@ public class Main implements Serializable {
 
 		}
 
-		FileOutputStream fo = new FileOutputStream("knjige.txt");
-		ObjectOutputStream output = new ObjectOutputStream(fo);
-
-		for (Knjiga knjiga2 : Knjiga.pohranjeneKnjige) {
-			output.writeObject(knjiga2);
-		}
-		output.close();
-		fo.close();
-
-		for (Knjiga knjiga3 : Knjiga.pohranjeneKnjige) {
-			System.out.println(knjiga3.toString());
-		}
-
-		
-		
-		FileOutputStream foo = new FileOutputStream("racuni.txt");
-		ObjectOutputStream outputt = new ObjectOutputStream(foo);
-
-		for (Racun racun2 : Racun.pohranjeniRacuni) {
-			outputt.writeObject(racun2);
-		}
-		outputt.close();
-		foo.close();
-
-		for (Racun racun3 : Racun.pohranjeniRacuni) {
-			System.out.println(racun3.toString());
-		}
-
-		
-	}
-
+		// ZAPISIVANJE SVE U ARRAY LISTU
+		val.upisiSveUBazu_Knjige();
+		val.upisiSveUBazu_Racuni();
 
 	}
 
-
-
+}

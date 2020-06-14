@@ -6,14 +6,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import biblioteka.Main;
 import biblioteka.Racun;
+import biblioteka.Validacija;
 
 
 
 class RacunTest {
 
 	
-	Racun obj;
+	Validacija obj;
 	Racun racun;
 	int brojRacunaKojiNePostoji;
 	int brojRacunaKojiPostoji;
@@ -22,10 +24,10 @@ class RacunTest {
 	
 	@BeforeEach
 	void setUp() throws Exception {
-		obj = new Racun();
+		obj = new Validacija();
 		racun = new Racun();
 		racun.setBrojRacuna(1);
-		Racun.pohranjeniRacuni.add(racun);
+		Main.pohranjeniRacuni.add(racun);
 		brojRacunaKojiNePostoji = 5;
 		brojRacunaKojiPostoji = 1;
 

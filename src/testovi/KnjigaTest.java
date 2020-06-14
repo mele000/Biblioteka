@@ -7,12 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import biblioteka.Knjiga;
+import biblioteka.Main;
 import biblioteka.Racun;
+import biblioteka.Validacija;
 
 class KnjigaTest {
 
 	
-	Knjiga obj;
+	Validacija val;
 	Knjiga knjiga;
 	int brojKnjigeKojaNePostoji;
 	int brojKnjigeKojaPostoji;
@@ -21,10 +23,10 @@ class KnjigaTest {
 	
 	@BeforeEach
 	void setUp() throws Exception {
-		obj = new Knjiga();
+		val = new Validacija();
 		knjiga = new Knjiga();
 		knjiga.setBrojKnjige(1);
-		Knjiga.pohranjeneKnjige.add(knjiga);
+		Main.pohranjeneKnjige.add(knjiga);
 		brojKnjigeKojaNePostoji = 5;
 		brojKnjigeKojaPostoji = 1;
 
@@ -33,20 +35,20 @@ class KnjigaTest {
 
 	@AfterEach
 	void tearDown() throws Exception {
-		obj = null;
+		val = null;
 		knjiga = null;
 
 	}
 
 	@Test
 	public void shouldReturnFalseWhenAccountDoesntExistInAL() {
-		boolean rez = obj.postojiLiIstaKnjiga(brojKnjigeKojaNePostoji);
+		boolean rez = val.postojiLiIstaKnjiga(brojKnjigeKojaNePostoji);
 		assertFalse(rez);
 	}
 
 	@Test
 	public void shouldReturnTrueWhenAccountExistInAL() {
-		boolean rez = obj.postojiLiIstaKnjiga(brojKnjigeKojaPostoji);
+		boolean rez = val.postojiLiIstaKnjiga(brojKnjigeKojaPostoji);
 		assertTrue(rez);
 	}
 

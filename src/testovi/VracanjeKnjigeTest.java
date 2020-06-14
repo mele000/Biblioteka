@@ -7,12 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import biblioteka.Knjiga;
+import biblioteka.Main;
 import biblioteka.Racun;
-import biblioteka.VracanjeKnjige;
+import biblioteka.Validacija;
 
 class VracanjeKnjigeTest {
 
-	VracanjeKnjige obj;
+	Validacija obj;
 	Racun racun;
 	Knjiga knjiga;
 	Knjiga knjiga2;
@@ -23,7 +24,7 @@ class VracanjeKnjigeTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		obj = new VracanjeKnjige();
+		obj = new Validacija();
 
 		racun = new Racun();
 		knjiga = new Knjiga();
@@ -41,9 +42,9 @@ class VracanjeKnjigeTest {
 		brojKnjigeKojaNePostoji = 213;
 		brojKnjigeKojaPostoji = 1;
 
-		Racun.pohranjeniRacuni.add(racun);
-		Knjiga.pohranjeneKnjige.add(knjiga);
-		Knjiga.pohranjeneKnjige.add(knjiga2);
+		Main.pohranjeniRacuni.add(racun);
+		Main.pohranjeneKnjige.add(knjiga);
+		Main.pohranjeneKnjige.add(knjiga2);
 
 	}
 

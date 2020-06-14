@@ -7,12 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import biblioteka.Knjiga;
-import biblioteka.Pregled;
+import biblioteka.Main;
 import biblioteka.Racun;
+import biblioteka.Validacija;
 
 class PregledTest {
 
-	Pregled obj;
+	Validacija obj;
 	Racun racun;
 	Racun racun2;
 	Knjiga knjiga;
@@ -21,7 +22,7 @@ class PregledTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		obj = new Pregled();
+		obj = new Validacija();
 		racun = new Racun();
 		racun2 = new Racun();
 		knjiga = new Knjiga();
@@ -30,10 +31,11 @@ class PregledTest {
 		knjiga.setBrojKnjige(1);
 		brojRacunaKojiNePostoji = 86393;
 		brojRacunaKojiPostoji = 1;
-		Racun.pohranjeniRacuni.add(racun);
-		Racun.pohranjeniRacuni.add(racun2);
-		Knjiga.pohranjeneKnjige.add(knjiga);
+		Main.pohranjeniRacuni.add(racun);
+		Main.pohranjeniRacuni.add(racun2);
+		Main.pohranjeneKnjige.add(knjiga);
 		racun2.pohranjeniKnjigeNaRacunu.add(knjiga);
+		racun2.setBrojPosudjenihKnjigaPovecaj();
 
 	}
 
